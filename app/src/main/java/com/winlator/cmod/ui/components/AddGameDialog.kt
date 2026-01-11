@@ -88,7 +88,8 @@ fun AddGameDialog(
                             container = container,
                             name = gameName,
                             executablePath = selectedExecutablePath,
-                            execArgs = execArgs
+                            execArgs = execArgs,
+                            icon = extractedIcon
                         )
                         
                         if (shortcut != null) {
@@ -120,6 +121,33 @@ fun AddGameDialog(
                 if (gameName.isEmpty()) {
                     gameName = file.name.substringBeforeLast(".")
                 }
+                showFilePicker = false
+            }
+        )
+    }
+}
+             showFilePicker = false
+            }
+        )
+    }
+}
+             showFilePicker = false
+            }
+        )
+    }
+}
+hers.Main) {
+                                extractedIcon = icon
+                                if (icon != null) {
+                                    Toast.makeText(context, "Ícone extraído com sucesso!", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                
                 showFilePicker = false
             }
         )

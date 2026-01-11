@@ -1,6 +1,7 @@
 package com.winlator.cmod.manager
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.winlator.cmod.core.FileUtils
 import com.winlator.cmod.data.Container
 import com.winlator.cmod.data.Shortcut
@@ -13,7 +14,8 @@ class ShortcutManager(private val context: Context) {
         container: Container,
         name: String,
         executablePath: String,
-        execArgs: String = ""
+        execArgs: String = "",
+        icon: Bitmap? = null
     ): Shortcut? {
         val desktopDir = container.getDesktopDir() ?: return null
         
@@ -23,12 +25,20 @@ class ShortcutManager(private val context: Context) {
         
         val desktopFile = File(desktopDir, "$name.desktop")
         
+        var iconName = ""
+        if (icon != null) {
+            iconName = saveIcon(container, name, icon)
+        }
+        
         val content = buildString {
             appendLine("[Desktop Entry]")
             appendLine("Name=$name")
             appendLine("Exec=wine $executablePath $execArgs")
             appendLine("Type=Application")
             appendLine("StartupNotify=true")
+            if (iconName.isNotEmpty()) {
+                appendLine("Icon=$iconName")
+            }
             appendLine()
             appendLine("[Extra Data]")
             appendLine("execArgs=$execArgs")
@@ -39,6 +49,23 @@ class ShortcutManager(private val context: Context) {
         }
         
         return Shortcut.fromFile(container, desktopFile)
+    }
+    
+    private fun saveIcon(container: Container, name: String, icon: Bitmap): String {
+        try {
+            container.rootDir?.let { rootDir ->
+                val iconDir = File(rootDir, ".local/share/icons/hicolor/64x64/apps/")
+                iconDir.mkdirs()
+                
+                val iconFile = File(iconDir, "$name.png")
+                if (FileUtils.saveBitmapToFile(icon, iconFile)) {
+                    return name
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return ""
     }
     
     fun deleteShortcut(shortcut: Shortcut): Boolean {
