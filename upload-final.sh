@@ -26,9 +26,13 @@ git rm -rf . > /dev/null 2>&1
 
 # Copia também os arquivos e pastas ocultos (que começam com ".")
 echo "📁 Copiando arquivos novos (incluindo ocultos)..."
-shopt -s dotglob  # <- habilita copiar arquivos ocultos
+shopt -s dotglob
 cp -r "$FOLDER"* "$TEMP_DIR/"
-shopt -u dotglob  # <- desativa depois
+shopt -u dotglob
+
+# Remove as pastas que não devem ser enviadas
+echo "🗑️ Removendo pastas excluídas..."
+rm -rf .codesandbox .devcontainer
 
 # Configura identidade do Git
 git config user.name "deivid22srk"
@@ -36,7 +40,7 @@ git config user.email "psvstore01@gmail.com"
 
 # Adiciona e faz o commit
 git add .
-git commit -m "Recriado automaticamente em $(date +"%Y-%m-%d %H:%M:%S")"
+git commit -m "Fixed build errors and implemented PE icon extraction - $(date +"%Y-%m-%d %H:%M:%S")"
 
 # Envia com força (substitui o que estiver no GitHub)
 echo "🚀 Enviando para o GitHub (forçado)..."
